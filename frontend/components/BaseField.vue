@@ -12,6 +12,8 @@ const modelValue = defineModel();
 <template>
   <div class="flex flex-col">
     <UInput v-model="modelValue" :placeholder="name" :type="type" />
-    <small v-if="errorBag.has(name)">{{ errorBag.get(name) }}</small>
+    <small :class="{ 'opacity-0': !errorBag.has(name) }"
+      >{{ errorBag.get(name) }}.</small
+    >
   </div>
 </template>
