@@ -1,5 +1,4 @@
 import Route from "@ioc:Adonis/Core/Route";
-import { schema, rules, validator } from "@ioc:Adonis/Core/Validator";
 import { z } from "zod";
 const users = [{ name: "John Doe" }];
 Route.get("/users", async () => {
@@ -15,3 +14,7 @@ Route.post("/users", async ({ request, response }) => {
   users.push(payload);
   return response.created(payload);
 });
+Route.get("/auth/me", "AuthController.me");
+Route.post("/auth/login", "AuthController.login");
+Route.post("/auth/register", "AuthController.register");
+Route.post("/auth/logout", "AuthController.logout");

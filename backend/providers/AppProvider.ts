@@ -1,6 +1,4 @@
 import type { ApplicationContract } from "@ioc:Adonis/Core/Application";
-import { z } from "zod";
-import { HttpException } from "@adonisjs/http-server/build/src/Exceptions/HttpException";
 
 export default class AppProvider {
   constructor(protected app: ApplicationContract) {}
@@ -11,9 +9,8 @@ export default class AppProvider {
 
   public async boot() {
     const Request = this.app.container.use("Adonis/Core/Request");
-    Request.macro("zValidate", function (schema) {
-      console.log(this.body());
-      return schema.parse(this.body());
+    Request.macro("zValidate", async function (schema) {
+      return await schema.parseAsync(this.body());
     });
   }
 

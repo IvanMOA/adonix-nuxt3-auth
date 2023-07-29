@@ -3,6 +3,6 @@ declare module "@ioc:Adonis/Core/Request" {
   interface RequestContract {
     zValidate<T extends z.ZodRawShape>(
       schema: z.ZodObject<T>,
-    ): z.infer<typeof schema>;
+    ): Promise<z.infer<typeof schema>>;
   }
 }

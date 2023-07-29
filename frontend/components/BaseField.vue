@@ -4,7 +4,7 @@ import { ErrorBag } from "~/utilities/ErrorBag";
 const props = defineProps<{
   errorBag: ErrorBag;
   name: string;
-  placeholder: string;
+  placeholder?: string;
   type: string;
 }>();
 const modelValue = defineModel();

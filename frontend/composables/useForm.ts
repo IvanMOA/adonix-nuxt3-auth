@@ -5,6 +5,7 @@ function sleep(ms: number) {
 }
 
 export function useForm<T extends Record<string, unknown>>(initialValues: T) {
+  const toast = useToast();
   const internal = ref({
     ...initialValues,
     originalValues: initialValues,
@@ -27,32 +28,39 @@ export function useForm<T extends Record<string, unknown>>(initialValues: T) {
     },
     async submit(method: "POST", url: string) {
       return new Promise(async (resolve, reject) => {
-        internal.value.clearErrors();
-        internal.value.isSubmitting = true;
-        const response = await fetch(url, {
-          method,
-          credentials: "include",
-          body: JSON.stringify(internal.value.values()),
-          headers: {
-            "content-type": "application/json",
-          },
-        });
-        await sleep(500);
-        const data = await response.json();
-        if (response.status === 422) {
+        try {
+          internal.value.clearErrors();
+          internal.value.isSubmitting = true;
+          const response = await fetch(url, {
+            method,
+            credentials: "include",
+            body: JSON.stringify(internal.value.values()),
+            headers: {
+              "content-type": "application/json",
+            },
+          });
+          await sleep(500);
+          const data = await response.json();
+          if (response.status === 422) {
+            internal.value.isSubmitting = false;
+            internal.value.errorBag = new ErrorBag(data.errors);
+            internal.value.submitFailed = true;
+            reject(data);
+            return;
+          }
+          if (response.ok) {
+            internal.value.isSubmitting = false;
+            resolve(data);
+            return;
+          }
           internal.value.isSubmitting = false;
-          internal.value.errorBag = new ErrorBag(data.errors);
-          internal.value.submitFailed = true;
+          toast.add({ title: data?.message ?? "Unknown error" });
           reject(data);
-          return;
-        }
-        if (response.ok) {
+        } catch (e) {
+          toast.add({ title: "Unknown error" });
           internal.value.isSubmitting = false;
-          resolve(data);
-          return;
+          reject(e);
         }
-        internal.value.isSubmitting = false;
-        reject(data);
       });
     },
   });

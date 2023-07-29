@@ -7,15 +7,14 @@ type User = {
   name: string;
 };
 const { $api } = useNuxtApp();
-const user = useUser();
+const user = await useUser();
 const form = useForm({
   email: "",
   password: "",
 });
 async function login() {
   try {
-    await form.value.submit("POST", $api("/auth/login"));
-    navigateTo("/");
+    await form.value.submit("POST", $api("/auth/register"));
   } catch (e) {
     console.log(e);
   }
@@ -25,8 +24,8 @@ async function login() {
   <div class="min-h-screen min-w-screen py-12">
     <div class="bg-white max-w-xl mx-auto p-8">
       <div>
-        <h1 class="mb-4">Login</h1>
-        <NuxtLink to="/register">register</NuxtLink>
+        <h1 class="mb-4">Register</h1>
+        <NuxtLink to="/login">login</NuxtLink>
         <form @submit.prevent="login" class="flex flex-col space-y-2">
           <BaseField
             v-model="form.email"
@@ -40,7 +39,9 @@ async function login() {
             type="password"
             :error-bag="form.errorBag"
           />
-          <UButton :disabled="form.isSubmitting" type="submit">Login</UButton>
+          <UButton :disabled="form.isSubmitting" type="submit"
+            >Register</UButton
+          >
         </form>
       </div>
     </div>
